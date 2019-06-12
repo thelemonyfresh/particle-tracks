@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<head>
+  <title>Particle Tracks</title>
+
+  <!-- stylesheet -->
+  <link rel="stylesheet" type="text/css" href="styles.css">
+
+</head>
+<body>
+  <svg id="js-particle-tracks-svg">
+    <filter id='bg-noise' x='0%' y='0%' width='100%' height='100%'>
+      <feTurbulence id="bg-turbulence" type="fractalNoise" result="bgTurbulence" baseFrequency="0.3" />
+      <feComposite operator="in" in="bgTurbulence" in2="SourceAlpha" result="bgComposite"/>
+      <feColorMatrix in="bgComposite" type="matrix"
+                     values="2   0   0   0   0
+                             0   1.4   0   0   0
+                             0   0   0   0   0
+                             0   0   0   1   0" />
+    </filter>
+    <rect x="0" y="0" width="100%" height="100%" filter="url(#bg-noise)" fill="yellow">
+      <!-- main javascript -->
+  </svg>
+  <script src="particle_tracks.js"></script>
+</body>
