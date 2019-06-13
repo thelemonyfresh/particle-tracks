@@ -7,18 +7,24 @@
 
 </head>
 <body>
-  <canvas id="particle-tracks-canvas" class="full-window" style="z-index: 1"></canvas>
-  <svg id="particle-tracks-svg" class="full-window">
+  <canvas id="particle-tracks-canvas" class="full-window" style="z-index: 0"></canvas>
+  <svg id="noise-svg" class="full-window">
     <filter id='bg-noise' x='0%' y='0%' width='100%' height='100%'>
       <feTurbulence id="bg-turbulence" type="fractalNoise" result="bgTurbulence" baseFrequency="0.3" />
-      <feComposite operator="in" in="bgTurbulence" in2="SourceAlpha" result="bgComposite"/>
-      <feColorMatrix in="bgComposite" type="matrix"
-                     values="2   0   0   0   0
-                             0   1.4   0   0   0
-                             0   0   0   0   0
-                             0   0   0   1   0" />
+      <!-- <feComposite operator="in" in="bgTurbulence" in2="SourceAlpha" result="bgComposite"/> -->
+      <!-- <feColorMatrix in="bgComposite" type="matrix"
+           values="2   0   0   0   0
+           0   1.4   0   0   0
+           0   0   0   0   0
+           0   0   0   1   0" /> -->
+      <
+      <!-- <feColorMatrix in="bgComposite" type="matrix"
+           values="2   0   0   0   0
+           0   1.4   0   0   0
+           0   0   0   0   0
+           0   0   0   1   0" /> -->
     </filter>
-    <rect x="0" y="0" width="100%" height="100%" filter="url(#bg-noise)" fill="yellow">
+    <rect x="0" y="0" width="100%" height="100%" filter="url(#bg-noise)" fill="transparent">
       <!-- main javascript -->
   </svg>
   <script src="particle_tracks.js"></script>
