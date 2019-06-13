@@ -20,8 +20,8 @@ window.onload = function() {
 
   setInterval(drawPaths,50);
   setInterval(updateBg,500);
-  setInterval(fadeOut,500);
-  setInterval(createParticle,1000);
+  setInterval(fadeOut,250);
+  setInterval(createParticle,500 + Math.random()*1000);
 };
 
 function prepareCanvas(canvasElem) {
@@ -97,7 +97,7 @@ function particleTrackGradient(x_i,x_f,y_i,y_f,lineWidth) {
 };
 
 function fadeOut() {
-  ParticleTracks.ctx.fillStyle = "rgba(255,255,0,0.175)";
+  ParticleTracks.ctx.fillStyle = "rgba(255,255,0,0.2)";
   ParticleTracks.ctx.fillRect(0, 0, ParticleTracks.canvas.width, ParticleTracks.canvas.height);
   //ParticleTracks.ctx.globalAlpha = 0.5;
   //ParticleTracks.ctx.drawImage(ParticleTracks.svg, 0, 0);
@@ -159,7 +159,7 @@ class Particle {
 
       // update the velocity
       let chargeToMassRatio = this.charge/this.mass;
-      let drag = 0.0025 * (1/this.mass) * (Math.pow(this.v_x, 2) + Math.pow(this.v_y, 2));
+      let drag = 0.002 * (1/this.mass) * (Math.pow(this.v_x, 2) + Math.pow(this.v_y, 2));
       let delta_v_x = this.chargeToMassRatio * this.v_y * 0.05;
       let delta_v_y = -1 * this.chargeToMassRatio * this.v_x * 0.05;
 
@@ -168,7 +168,7 @@ class Particle {
       //console.log(`delt vx: ${delta_v_x}`);
       //console.log(`delt vy: ${delta_v_y}`);
 
-      this.v_x = this.v_x + delta_v_x - (drag * this.v_x / this.absVelocity());
+      this.v_x = this.v_x + delta_v_x - (drag * 0.25 * this.v_x / this.absVelocity());
       this.v_y = this.v_y + delta_v_y - (drag * this.v_y / this.absVelocity());
     }
     // possibly particle decay
@@ -178,7 +178,7 @@ class Particle {
 
     let out_of_x = this.x > 2 * ParticleTracks.width || this.x < -1 * ParticleTracks.width;
     let out_of_y = this.y > 2* ParticleTracks.height || this.y < -1 * ParticleTracks.height;
-    let stopped = this.absVelocity() <= 1.6;
+    let stopped = this.absVelocity() <= 2.5;
     if( out_of_x || out_of_y || stopped){
       // remove from list of active particles if way off canvas
       let index = ParticleTracks.activeParticles.indexOf(this);
@@ -202,7 +202,7 @@ class Positron extends Particle {
 
 class Muon extends Particle {
   constructor(pos_x, pos_y, vel_x, vel_y){
-    super(pos_x, pos_y, vel_x, vel_y, -1, 1000);
+    super(pos_x, pos_y, vel_x, vel_y, -1, 500);
     this.decayProbability = 0.05;
   }
 
@@ -222,8 +222,8 @@ class Photon extends Particle {
 
   // decays into an electron/positron pair
   decay(){
-    let e = new Electron(this.x, this.y, this.v_x/2, this.v_y/2);
-    let p = new Positron(this.x, this.y, this.v_x/2, this.v_y/2);
+    let e = new Electron(this.x, this.y, this.v_x*0.7, this.v_y*0.7);
+    let p = new Positron(this.x, this.y, this.v_x*0.7, this.v_y*0.7);
     ParticleTracks.activeParticles.push(e,p);
     this.v_x = 0;
     this.v_y = 0;
@@ -237,7 +237,7 @@ ParticleTracks.activeParticles = [
   new Photon(500,500,-10,-50)
 ];
 
-ParticleTracks.particleTypes = [Electron, Positron, Muon, Photon];
+ParticleTracks.particleTypes = [Muon, Muon, Photon];
 
 function createParticle() {
   let particleClass = selectFromArray(ParticleTracks.particleTypes);
@@ -247,19 +247,20 @@ function createParticle() {
   let v_x = (2 * Math.random() - 1) * 100;
   let v_y = (2 * Math.random() - 1) * 100;
 
-  vMax = 100;
+  vMax = 25;
+  vMin = 65;
   xMax = ParticleTracks.width;
   yMax = ParticleTracks.height;
 
   possibleStartingPositions = [
     //right
-    [0, Math.random()*yMax, Math.random()*vMax, Math.random()*vMax],
+    [0, Math.random()*yMax, vMin + Math.random()*vMax, vMin + (0.25 + 0.5*Math.random())*vMax],
     //top
-    [Math.random()*xMax, 0, Math.random()*vMax, Math.random()*vMax],
+    [Math.random()*xMax, 0, vMin + (0.25 + 0.5*Math.random())*vMax, vMin + Math.random()*vMax],
     //left
-    [xMax, Math.random()*yMax, -Math.random()*vMax, Math.random()*vMax],
+    [xMax, Math.random()*yMax, -1*(vMin + Math.random()*vMax), 0.25 + 0.5*Math.random()*vMax],
     //bottom
-    [Math.random()*xMax, yMax, Math.random()*vMax, -Math.random()*vMax],
+    [Math.random()*xMax, yMax, vMin + (0.25 + 0.5*Math.random())*vMax, -(vMin + Math.random()*vMax)],
   ];
 
   startArgs = selectFromArray(possibleStartingPositions);
