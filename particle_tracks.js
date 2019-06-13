@@ -18,7 +18,7 @@ window.onload = function() {
   ParticleTracks.ctx.fillStyle = "yellow";
   ParticleTracks.ctx.fillRect(0, 0, ParticleTracks.canvas.width, ParticleTracks.canvas.height);
 
-  setInterval(drawPaths,50);
+  setInterval(drawPaths,25);
   setInterval(updateBg,500);
   setInterval(fadeOut,250);
   setInterval(createParticle,500 + Math.random()*1000);
@@ -47,7 +47,7 @@ function prepareCanvas(canvasElem) {
 // Drawing functions.
 function draw(particle) {
   console.log(particle.constructor.name);
-  console.log(`absvel: ${particle.absVelocity()}`);
+  //console.log(`absvel: ${particle.absVelocity()}`);
   // don't draw massless particles
   if (particle.mass == 0 || particle.absVelocity() == 0) return;
 
@@ -153,7 +153,7 @@ class Particle {
     // stop rending this particle if out of bounds or stopped
     let out_of_x = this.x > 2 * ParticleTracks.width || this.x < -1 * ParticleTracks.width;
     let out_of_y = this.y > 2* ParticleTracks.height || this.y < -1 * ParticleTracks.height;
-    let stopped = this.absVelocity() <= Math.random()*10;
+    let stopped = this.absVelocity() <= 5;
     if( out_of_x || out_of_y || stopped){
       // remove from list of active particles if way off canvas
       let index = ParticleTracks.activeParticles.indexOf(this);
@@ -161,8 +161,8 @@ class Particle {
       return;
     }
 
-    console.log(`x: ${this.x}, y: ${this.y}`);
-    console.log(`vx: ${this.v_x}, vy: ${this.v_y}`);
+    //console.log(`x: ${this.x}, y: ${this.y}`);
+    //console.log(`vx: ${this.v_x}, vy: ${this.v_y}`);
 
     this.x_prev = this.x;
     this.y_prev = this.y;
@@ -176,19 +176,22 @@ class Particle {
 
       // update the velocity
       let chargeToMassRatio = this.charge/this.mass;
-      let drag = 0.00175 * (1/this.mass) * (Math.pow(this.v_x, 2) + Math.pow(this.v_y, 2));
-      let delta_v_x = this.chargeToMassRatio * this.v_y * 0.1;
-      let delta_v_y = -1 * this.chargeToMassRatio * this.v_x * 0.1;
 
-      //console.log(`abs vel: ${ this.absVelocity() } `);
-      //console.log(`decay: ${decay}`);
-      //console.log(`delt vx: ${delta_v_x}`);
-      //console.log(`delt vy: ${delta_v_y}`);
+      let a_x = this.chargeToMassRatio * this.v_y * 0.1;
+      let a_y = -1 * this.chargeToMassRatio * this.v_x * 0.1;
 
-      this.v_x = this.v_x + delta_v_x - (drag * 0.5 * this.v_x / this.absVelocity());
-      this.v_y = this.v_y + delta_v_y - (drag * this.v_y / this.absVelocity());
+      let drag = 0.002 * (1/this.mass) * (Math.pow(this.v_x, 2) + Math.pow(this.v_y, 2));
+
+      let sign_x = this.v_x == 0 ? 1 : this.v_x / Math.abs(this.v_x);
+      let sign_y = this.v_y == 0 ? 1 : this.v_y / Math.abs(this.v_y);
+
+      this.v_x = this.v_x + a_x - drag * sign_x;
+      this.v_y = this.v_y + a_y - drag * sign_y;
+
+      console.log("AFTER");
+      console.log(`delt vx: ${a_x}`);
+      console.log(`delt vy: ${a_y}`);
     }
-
   };
 };
 
@@ -239,7 +242,7 @@ class Photon extends Particle {
 ParticleTracks.activeParticles = [
   //new Positron(200,100,100,5),
   //new Electron(200,100,100,5),
-  new Photon(0,500,85,0)
+  new Photon(0,500,50,0)
 ];
 
 ParticleTracks.particleTypes = [Muon, Muon, Photon];
