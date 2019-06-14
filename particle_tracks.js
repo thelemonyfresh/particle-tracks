@@ -23,7 +23,7 @@ window.onload = function() {
   setInterval(drawParticles,25);
   setInterval(updateNoise,500);
   setInterval(fadeOut,250);
-  setInterval(createParticle,2000 + Math.random()*1000);
+  //setInterval(createParticle,2000 + Math.random()*1000);
 
   // Container for particles
   ParticleTracks.activeParticles = [];
@@ -121,7 +121,7 @@ function updateNoise() {
 
 // Particles
 class Particle {
-  constructor(x_0, y_0, vel_x, vel_y, charge, mass) {
+  constructor(x_0, y_0, z_0, vel_x, vel_y, vel_z, charge, mass) {
     // Physical properties
     this.mass = mass;
     this.charge = charge;
@@ -138,8 +138,8 @@ class Particle {
     this.y = this.y_prev + this.v_y;
 
     // Random z position, z velocity opposite to z position direction.
-    this.z = Math.random();
-    this.v_z = 0.1*Math.random() * -1 * this.z/Math.abs(this.z);
+    this.z = z_0; // Math.random();
+    this.v_z = vel_z; // 0.1*Math.random() * -1 * this.z/Math.abs(this.z);
   };
 
   absVelocity(){
@@ -160,8 +160,9 @@ class Particle {
     // Stop rending this particle if out of bounds or stopped
     let out_of_x = this.x > 2 * ParticleTracks.width || this.x < -1 * ParticleTracks.width;
     let out_of_y = this.y > 2* ParticleTracks.height || this.y < -1 * ParticleTracks.height;
+    let out_of_z = Math.abs(this.z) > 3;
 
-    if( out_of_x || out_of_y || this.stopped()){
+    if( out_of_x || out_of_y || out_of_z || this.stopped()){
       let index = ParticleTracks.activeParticles.indexOf(this);
       // Remove from list of active particles
       ParticleTracks.activeParticles.splice(index,1);
@@ -201,26 +202,26 @@ class Particle {
 };
 
 class Electron extends Particle {
-  constructor(pos_x, pos_y, vel_x, vel_y) {
-    super(pos_x, pos_y, vel_x, vel_y, -1, 0.5);
+  constructor(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z) {
+    super(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, -1, 0.5);
   };
 }
 
 class Positron extends Particle {
-  constructor(pos_x, pos_y, vel_x, vel_y) {
-    super(pos_x, pos_y, vel_x, vel_y, 1, 0.5);
+  constructor(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z) {
+    super(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, 1, 0.5);
   };
 }
 
 class Muon extends Particle {
-  constructor(pos_x, pos_y, vel_x, vel_y){
-    super(pos_x, pos_y, vel_x, vel_y, -1, 500);
+  constructor(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z){
+    super(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, -1, 500);
     this.decayProbability = 0.02;
   }
 
   // Decays into one electron (and some neutrinos which we ignore)
   decay() {
-    let e = new Electron(this.x, this.y, this.v_x*0.5, this.v_y*0.5);
+    let e = new Electron(this.x, this.y, this.z, this.v_x*0.5, this.v_y*0.5, this.v_z*0.5);
     ParticleTracks.activeParticles.push(e);
     this.v_x = 0;
     this.v_y = 0;
@@ -228,15 +229,15 @@ class Muon extends Particle {
 }
 
 class Photon extends Particle {
-  constructor(pos_x, pos_y, vel_x, vel_y) {
-    super(pos_x, pos_y, vel_x, vel_y, 0, 0);
+  constructor(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z) {
+    super(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, 0, 0);
     this.decayProbability = 0.3;
   };
 
   // Really some hand-wavy pair production that looks cool
   decay(){
-    let e = new Electron(this.x, this.y, this.v_x*0.7, this.v_y*0.7);
-    let p = new Positron(this.x, this.y, this.v_x*0.7, this.v_y*0.7);
+    let e = new Electron(this.x, this.y, this.z, this.v_x*0.7, this.v_y*0.7, this.v_z*0.7);
+    let p = new Positron(this.x, this.y, this.z, this.v_x*0.7, this.v_y*0.7, this.v_z*0.7);
     ParticleTracks.activeParticles.push(e,p);
     this.v_x = 0;
     this.v_y = 0;
@@ -244,21 +245,21 @@ class Photon extends Particle {
 };
 
 class Proton extends Particle {
-  constructor(pos_x, pos_y, vel_x, vel_y) {
-    super(pos_x, pos_y, vel_x, vel_y, 1, 900);
+  constructor(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z) {
+    super(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, 1, 900);
   };
 }
 
 class Neutron extends Particle {
-  constructor(pos_x, pos_y, vel_x, vel_y) {
-    super(pos_x, pos_y, vel_x, vel_y, 0, 900);
+  constructor(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z) {
+    super(pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, 0, 900);
     this.decayProbability = 0.05;
   };
 
   // Free neutron beta decay
   decay() {
-    let e = new Electron(this.x, this.y, this.v_x*0.6, this.v_y*0.6);
-    let p = new Proton(this.x, this.y, this.v_x*0.7, this.v_y*0.7);
+    let e = new Electron(this.x, this.y, this.z, this.v_x*0.6, this.v_y*0.6, this.v_z*0.6);
+    let p = new Proton(this.x, this.y, this.z, this.v_x*0.7, this.v_y*0.7, this.v_z*0.6);
     ParticleTracks.activeParticles.push(e,p);
     this.v_x = 0;
     this.v_y = 0;
@@ -279,20 +280,23 @@ function createParticle() {
 
   let xMax = ParticleTracks.width;
   let yMax = ParticleTracks.height;
+  let zMax = 1;
 
   let randomX = xMax * Math.random();
   let randomY = yMax * Math.random();
+  let randomZ = zMax * Math.random();
 
+  randomVz = 0.1*Math.random() * -1 * randomZ/Math.abs(randomZ);
 
   possibleStartingPositions = [
     //left
-    [0, randomY, randomV, randomV2],
+    [0, randomY, randomZ, randomV, randomV2, randomVz],
     //top
-    [randomX, 0, randomV2, randomV],
+    [randomX, 0, randomZ, randomV2, randomV, randomVz],
     //right
-    [xMax, randomY, -randomV, randomV2],
+    [xMax, randomY, randomZ, -randomV, randomV2, randomVz],
     //bottom
-    [randomX, yMax, -randomV2, randomV],
+    [randomX, yMax, randomZ, -randomV2, randomV, randomVz],
   ];
 
   startArgs = selectFromArray(possibleStartingPositions);
