@@ -21,7 +21,7 @@ window.onload = function() {
   setInterval(drawPaths,25);
   setInterval(updateBg,500);
   setInterval(fadeOut,250);
-  setInterval(createParticle,500 + Math.random()*1000);
+  setInterval(createParticle,2000 + Math.random()*1000);
 };
 
 function prepareCanvas(canvasElem) {
@@ -54,7 +54,7 @@ function draw(particle) {
   console.log("still drawing");
 
   let ctx = ParticleTracks.ctx;
-  let lineWidth = 10 + (0.0075 * particle.mass);
+  let lineWidth = 10 + (0.0075 * particle.mass) - particle.z;
   //console.log(`lw: ${lineWidth}`);
   //ctx.lineWidth = lineWidth;
   ctx.lineCap = 'round';
@@ -130,6 +130,7 @@ class Particle {
     this.v_x = vel_x;
     this.v_y = vel_y;
 
+
     this.mass = mass;
     this.charge = charge;
 
@@ -137,6 +138,8 @@ class Particle {
 
     this.x = this.x_prev + this.v_x;
     this.y = this.y_prev + this.v_y;
+    this.z = Math.random();
+    this.v_z = 0.1*Math.random() * -1 * this.z/Math.abs(this.z);
   };
 
   absVelocity(){
@@ -153,7 +156,7 @@ class Particle {
     // stop rending this particle if out of bounds or stopped
     let out_of_x = this.x > 2 * ParticleTracks.width || this.x < -1 * ParticleTracks.width;
     let out_of_y = this.y > 2* ParticleTracks.height || this.y < -1 * ParticleTracks.height;
-    let stopped = this.absVelocity() <= 5;
+    let stopped = this.absVelocity() <= 2;
     if( out_of_x || out_of_y || stopped){
       // remove from list of active particles if way off canvas
       let index = ParticleTracks.activeParticles.indexOf(this);
@@ -170,18 +173,24 @@ class Particle {
     // update the position
     this.x = this.x_prev + this.v_x;
     this.y = this.y_prev + this.v_y;
+    this.z = this.z + this.v_z;
 
     // don't update velocity for massless particles
     if (this.mass != 0) {
 
+      // v_z TEST
+
       // update the velocity
       let chargeToMassRatio = this.charge/this.mass;
 
-      let a_x = this.chargeToMassRatio * this.v_y * 0.1;
-      let a_y = -1 * this.chargeToMassRatio * this.v_x * 0.1;
+      let B_x = 0.1; //+ 0.02*Math.abs(this.x /  ParticleTracks.width );
+      let B_y = 0.11; //+ 0.02*Math.abs(this.y / ParticleTracks.height );
 
-      let drag = 0.002 * (1/this.mass) * (Math.pow(this.v_x, 2) + Math.pow(this.v_y, 2));
+      let a_x = this.chargeToMassRatio * this.v_y * B_x;
+      let a_y = -1 * this.chargeToMassRatio * this.v_x * B_y;
 
+      let drag = 0.8; // * (1/this.mass) * (Math.pow(this.v_x, 2) + Math.pow(this.v_y, 2));
+      console.log(`drag: ${drag}`);
       let sign_x = this.v_x == 0 ? 1 : this.v_x / Math.abs(this.v_x);
       let sign_y = this.v_y == 0 ? 1 : this.v_y / Math.abs(this.v_y);
 
@@ -210,22 +219,23 @@ class Positron extends Particle {
 class Muon extends Particle {
   constructor(pos_x, pos_y, vel_x, vel_y){
     super(pos_x, pos_y, vel_x, vel_y, -1, 500);
-    this.decayProbability = 0.075;
+    this.decayProbability = 0.01;
   }
 
   // decays into one electron
   decay() {
     console.log("muon decay");
-    let e = new Electron(this.x, this.y, this.v_x*0.35, this.v_y*0.35);
+    let e = new Electron(this.x, this.y, this.v_x*0.5, this.v_y*0.5);
     ParticleTracks.activeParticles.push(e);
     this.v_x = 0;
     this.v_y = 0;
   }
 }
+
 class Photon extends Particle {
-  constructor(pos_x, pos_y, vel_x, vel_y){
+  constructor(pos_x, pos_y, vel_x, vel_y) {
     super(pos_x, pos_y, vel_x, vel_y, 0, 0);
-    this.decayProbability = 0.2;
+    this.decayProbability = 0.1;
   };
 
   // decays into an electron/positron pair
@@ -238,14 +248,37 @@ class Photon extends Particle {
   }
 };
 
+class Proton extends Particle {
+  constructor(pos_x, pos_y, vel_x, vel_y) {
+    super(pos_x, pos_y, vel_x, vel_y, 1, 900);
+  };
+}
+
+class Neutron extends Particle {
+  constructor(pos_x, pos_y, vel_x, vel_y) {
+    super(pos_x, pos_y, vel_x, vel_y, 0, 900);
+    this.decayProbability = 0.1;
+  };
+
+  // free neutron beta decay
+  decay() {
+    let e = new Electron(this.x, this.y, this.v_x*0.6, this.v_y*0.6);
+    let p = new Proton(this.x, this.y, this.v_x*0.7, this.v_y*0.7);
+    ParticleTracks.activeParticles.push(e,p);
+    this.v_x = 0;
+    this.v_y = 0;
+  }
+}
+
 // Container for particles
 ParticleTracks.activeParticles = [
   //new Positron(200,100,100,5),
   //new Electron(200,100,100,5),
-  new Photon(0,500,50,0)
+  //new Neutron(0,500,50,0)
 ];
 
-ParticleTracks.particleTypes = [Muon, Muon, Photon];
+
+ParticleTracks.particleTypes = [Muon, Muon, Photon, Proton, Neutron];
 
 function createParticle() {
   let particleClass = selectFromArray(ParticleTracks.particleTypes);
@@ -256,8 +289,8 @@ function createParticle() {
   let v_y = (2 * Math.random() - 1) * 100;
 
   // TODO: choose random energies, use momentum to decide velocity
-  vMax = 15;
-  vMin = 65;
+  vMax = 25;
+  vMin = 20;
   xMax = ParticleTracks.width;
   yMax = ParticleTracks.height;
 
