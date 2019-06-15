@@ -23,7 +23,7 @@ window.onload = function() {
   setInterval(drawParticles,25);
   setInterval(updateNoise,500);
   setInterval(fadeOut,250);
-  //setInterval(createParticle,2000 + Math.random()*1000);
+  setInterval(createParticle,1000 + Math.random()*1000);
 
   // Container for particles
   ParticleTracks.activeParticles = [];
@@ -188,15 +188,14 @@ class Particle {
       let a_y = -1 * this.chargeToMassRatio * this.v_x * B_y;
 
       // "Drag" -- velocity lost to particle interactions
-      let drag = 0.8;
+      let drag = 0.5 + 0.001 * Math.pow(this.absVelocity(),2);
 
-      // Drag should always be opposite to motion
-      let sign_x = this.v_x == 0 ? 1 : this.v_x / Math.abs(this.v_x);
-      let sign_y = this.v_y == 0 ? 1 : this.v_y / Math.abs(this.v_y);
+      let drag_x = drag * this.v_x / this.absVelocity();
+      let drag_y = drag * this.v_y / this.absVelocity();
 
       // Update velocity
-      this.v_x = this.v_x + a_x - drag * sign_x;
-      this.v_y = this.v_y + a_y - drag * sign_y;
+      this.v_x = this.v_x + a_x - drag_x;
+      this.v_y = this.v_y + a_y - drag_y;
     }
   };
 };
@@ -236,8 +235,8 @@ class Photon extends Particle {
 
   // Really some hand-wavy pair production that looks cool
   decay(){
-    let e = new Electron(this.x, this.y, this.z, this.v_x*0.7, this.v_y*0.7, this.v_z*0.7);
-    let p = new Positron(this.x, this.y, this.z, this.v_x*0.7, this.v_y*0.7, this.v_z*0.7);
+    let e = new Electron(this.x, this.y, this.z, this.v_x*0.5, this.v_y*0.5, this.v_z*0.5);
+    let p = new Positron(this.x, this.y, this.z, this.v_x*0.5, this.v_y*0.5, this.v_z*0.5);
     ParticleTracks.activeParticles.push(e,p);
     this.v_x = 0;
     this.v_y = 0;
