@@ -31,8 +31,6 @@ class ParticleCanvas {
     ParticleTracks.width = rect.width;
     ParticleTracks.height = rect.width;
 
-    // TODO: store canvas redraw after resize instead of sclaing:
-    // https://stackoverflow.com/questions/5517783/preventing-canvas-clear-when-resizing-window
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
 
