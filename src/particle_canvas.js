@@ -1,23 +1,19 @@
 class ParticleCanvas {
   constructor(container) {
-    //this.particleGenerator = particleGenerator;
     this.container = container;
   };
 
   init() {
-    //this.canvas = this.prepareCanvas(this.container);
-    this.context = this.prepareContext(this.container);
+    this.prepareContext(this.container);
 
     setInterval(() => this.drawParticles(),25);
     setInterval(() => this.fadeOut(),250);
   };
 
-  prepareCanvas(container) {
-
-    return canvas;
-  };
-
   prepareContext(container) {
+    // Initialize canvas to the correct dpr-scaled size
+    const dpr = window.devicePixelRatio || 1;
+
     let canvas = document.createElement('canvas');
     canvas.id = 'particle-tracks-particle-canvas';
     container.appendChild(canvas);
@@ -35,23 +31,22 @@ class ParticleCanvas {
     ParticleTracks.width = rect.width;
     ParticleTracks.height = rect.width;
 
-    // Initialize canvas to the correct dpr-scaled size
-    const dpr = window.devicePixelRatio || 1;
-
     // TODO: store canvas redraw after resize instead of sclaing:
     // https://stackoverflow.com/questions/5517783/preventing-canvas-clear-when-resizing-window
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
 
+    // Set canvas
+    this.canvas = canvas;
+
     let context = canvas.getContext("2d");
     context.scale(dpr, dpr);
-
-    this.canvas = canvas;
 
     context.fillStyle = "yellow";
     context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    return context;
+    // Set context
+    this.context = context;
   };
 
   drawParticles() {

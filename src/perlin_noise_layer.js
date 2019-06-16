@@ -26,6 +26,7 @@ class PerlinNoiseLayer {
     svg.style.width = rect.width;
     svg.style.height = rect.height;
     svg.style.zIndex = 1;
+    svg.style.opacity = 0.75;
   }
 
   // Make the Perlin noise background dynamic

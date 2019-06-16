@@ -1,25 +1,25 @@
 // Particles
 class Particle {
-  //# abstract out position3D, velocity3D from Vectors
   constructor(x_0, y_0, z_0, vel_x, vel_y, vel_z, charge, mass) {
     // Physical properties
     this.mass = mass;
     this.charge = charge;
     this.chargeToMassRatio = charge/mass;
 
-    // Last position, velocity, current position
+    // Last position (only x and y needed)
     this.x_prev = x_0;
     this.y_prev = y_0;
 
+    // Current velocity
     this.v_x = vel_x;
     this.v_y = vel_y;
+    this.v_z = vel_z;
 
+    // Current position
+    // TODO: abstract out Vector3D class instead of handling vectors component-wise etc.
     this.x = this.x_prev + this.v_x;
     this.y = this.y_prev + this.v_y;
-
-    // Random z position, z velocity opposite to z position direction.
-    this.z = z_0; // Math.random();
-    this.v_z = vel_z; // 0.1*Math.random() * -1 * this.z/Math.abs(this.z);
+    this.z = z_0;
   };
 
   absVelocity(){
@@ -37,7 +37,7 @@ class Particle {
       return;
     }
 
-    // Stop rending this particle if out of bounds or stopped
+    // Stop rendering this particle if out of bounds or stopped
     let out_of_x = this.x > 2 * ParticleTracks.width || this.x < -1 * ParticleTracks.width;
     let out_of_y = this.y > 2* ParticleTracks.height || this.y < -1 * ParticleTracks.height;
     let out_of_z = Math.abs(this.z) > 3;
@@ -59,9 +59,9 @@ class Particle {
 
     // Update velocity (but not for massless particles)
     if (this.mass != 0) {
-      // Magnetic field
+      // Magnetic field strenght, a bit assymmetric
       let B_x = 0.1;
-      let B_y = 0.125;
+      let B_y = 0.13;
 
       // Acceleration
       let a_x = this.chargeToMassRatio * this.v_y * B_x;

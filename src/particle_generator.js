@@ -1,8 +1,8 @@
-import { Muon, Photon, Proton, Neutron } from './particle';
+import { Electron, Positron, Muon, Photon, Proton, Neutron } from './particle';
 
 class ParticleGenerator {
   constructor() {
-    this.generateParticleTypes = [Muon, Photon, Proton, Neutron];
+    this.generateParticleTypes = [Positron, Muon, Photon, Proton, Neutron];
   };
 
   init(){

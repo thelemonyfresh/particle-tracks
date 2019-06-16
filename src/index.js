@@ -23,20 +23,7 @@ import ParticleGenerator from './particle_generator';
     ParticleTracks.generator = new ParticleGenerator();
     ParticleTracks.generator.init();
 
-
-    // MODULES:
-
-    // Particle generator -- createParticle(), selectFromArray(), activeParticles
-    // // imports Particle, subparticles -- Particle, Electron, etc., isStopped?
-    // particleGenerator = new ParticleGenerator(optional args: freq, etc.,);
-    // create partcielGenerator.collectGarbage(); (removes "stopped" particles)
-
-    // Vector -- position.times(3), velocity.times(3);
-
-    // Particle canvas -- prepareCanvas->init, draw, particleTrackGradient, fadeOut
-    // particleCanvas = new ParticleCanvas.init(particleGeneratore;)
-
-    // console log about particle generator started?
+    console.log('Particle tracks simulation initiated.');
   };
 
 })(window);
