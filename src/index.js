@@ -23,6 +23,11 @@ import ParticleGenerator from './particle_generator';
     ParticleTracks.generator = new ParticleGenerator();
     ParticleTracks.generator.init();
 
+    window.onresize = () => {
+      ParticleTracks.noiseLayer.resize();
+      ParticleTracks.particleCanvas.prepareContext(ParticleTracks.container);
+    };
+
     console.log('Particle tracks visualization initiated.');
   };
 

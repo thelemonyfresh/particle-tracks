@@ -10,12 +10,18 @@ class PerlinNoiseLayer {
   init() {
     this.targetContainer.innerHTML += noiseSVG;
     let svgElem = document.getElementById('particle-tracks-perlin-noise-svg');
-
+    this.svg = svgElem;
     this.setupSVG(svgElem);
 
     this.filterTurbulence = document.getElementById('particle-tracks-perlin-turbulence');
     setInterval(() => this.updateNoise(),500);
   };
+
+  resize() {
+    let rect = this.targetContainer.getBoundingClientRect();
+    this.svg.style.width = rect.width;
+    this.svg.style.height = rect.height;
+  }
 
   setupSVG(svg) {
     let rect = this.targetContainer.getBoundingClientRect();
