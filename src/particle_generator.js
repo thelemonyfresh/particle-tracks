@@ -6,13 +6,15 @@ class ParticleGenerator {
   };
 
   init(){
+    this.createParticle();
     setInterval(() => this.createParticle(),1000 + Math.random()*1000);
   }
 
-  createParticle() { // -> createRandomParticle
+  createParticle() {
     let particleClass = selectFromArray(this.generateParticleTypes);
 
-    // TODO: choose random energies, use momentum to decide velocity
+    // TODO: choose random energies within range, use momentum to decide velocity
+    //        for more realistic distribution.
     let vMax = 30;
     let vMin = 20;
 
@@ -41,7 +43,6 @@ class ParticleGenerator {
     ];
 
     let startArgs = selectFromArray(possibleStartingPositions);
-    console.log(startArgs);
     ParticleTracks.activeParticles.push(new particleClass(...startArgs));
   };
 };

@@ -1,46 +1,52 @@
 class ParticleCanvas {
   constructor(container) {
-    // this.particleGenerator = particleGenerator;
+    //this.particleGenerator = particleGenerator;
     this.container = container;
   };
 
   init() {
-    this.canvas = this.prepareCanvas(this.container);
-    this.context = this.prepareContext();
+    //this.canvas = this.prepareCanvas(this.container);
+    this.context = this.prepareContext(this.container);
 
     setInterval(() => this.drawParticles(),25);
     setInterval(() => this.fadeOut(),250);
   };
 
   prepareCanvas(container) {
+
+    return canvas;
+  };
+
+  prepareContext(container) {
     let canvas = document.createElement('canvas');
     canvas.id = 'particle-tracks-particle-canvas';
     container.appendChild(canvas);
     canvas = document.getElementById('particle-tracks-particle-canvas');
 
-    const rect = container.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
+    canvas.style.position = 'absolute';
+    canvas.style.top = 0;
+    canvas.style.left = 0;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
 
-    return canvas;
-  };
+    const rect = canvas.getBoundingClientRect();
 
-  prepareContext() {
-    // Initialize canvas to the correct size
+    // Have to store the global width and height before scaling with dpr
+    ParticleTracks.width = rect.width;
+    ParticleTracks.height = rect.width;
+
+    // Initialize canvas to the correct dpr-scaled size
     const dpr = window.devicePixelRatio || 1;
-    const rect = this.canvas.getBoundingClientRect();
 
     // TODO: store canvas redraw after resize instead of sclaing:
     // https://stackoverflow.com/questions/5517783/preventing-canvas-clear-when-resizing-window
-    this.canvas.width = rect.width * dpr;
-    this.canvas.height = rect.height * dpr;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
 
-    let context = this.canvas.getContext("2d");
+    let context = canvas.getContext("2d");
     context.scale(dpr, dpr);
 
-    // pass width and height to particlegenerator dirrently?
-    ParticleTracks.width = rect.width;
-    ParticleTracks.height = rect.height;
+    this.canvas = canvas;
 
     context.fillStyle = "yellow";
     context.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -48,7 +54,6 @@ class ParticleCanvas {
     return context;
   };
 
-  //# needs context, particles this.context, this.particleGenerator.activeParticles
   drawParticles() {
     ParticleTracks.activeParticles.forEach(particle => {
       this.draw(particle);
@@ -56,7 +61,6 @@ class ParticleCanvas {
     });
   };
 
-  //# needs context, particles
   // Set up and draw a particle for one frame of movement.
   draw(particle) {
     // Don't draw massless particles, stopped particles
@@ -79,9 +83,9 @@ class ParticleCanvas {
     ctx.closePath();
   };
 
+  // Prepare linear gradient perpendicular to particle path (for nice
+  //   blue-to-black effect on particle tracks)
   particleTrackGradient(x_i,x_f,y_i,y_f,lineWidth) {
-    // prepare linear gradient perpendicular to particle path (for nice
-    //   blue-to-black effect on particle tracks)
     let dx = x_i-x_f;
     let dy = y_i-y_f;
     let dist = Math.sqrt(dx*dx + dy*dy);
