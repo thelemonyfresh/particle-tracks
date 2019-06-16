@@ -1,6 +1,6 @@
 <svg id="noise-svg" class="full-window" style="opacity: 0.75; width: 100%; height: 100%">
     <filter id='bg-noise' x='0%' y='0%' width='100%' height='100%'>
-        <feTurbulence id="bg-turbulence" type="fractalNoise" result="bgTurbulence" baseFrequency="0.3" />
+        <feTurbulence id="particle-tracks-perlin-turbulence" type="fractalNoise" result="bgTurbulence" baseFrequency="0.3" />
     </filter>
     <rect x="0" y="0" width="100%" height="100%" filter="url(#bg-noise)" fill="transparent"></rect>
 </svg>

@@ -10,18 +10,18 @@ window.onload = function() {
   ParticleTracks.width = 0;
   ParticleTracks.height = 0;
 
-  ParticleTracks.filterTurbulence = filterTurbulence = document.getElementById('bg-turbulence');
+
   ParticleTracks.canvas = document.getElementById("particle-tracks-canvas");
   ParticleTracks.ctx = prepareCanvas(ParticleTracks.canvas);
   ParticleTracks.dpRatio = window.devicePixelRatio;
 
+  // move this to preparecanvas
   ParticleTracks.ctx.fillStyle = "yellow";
   ParticleTracks.ctx.fillRect(0, 0, ParticleTracks.canvas.width, ParticleTracks.canvas.height);
 
   ParticleTracks.perlinSeed = 1;
 
   setInterval(drawParticles,25);
-  setInterval(updateNoise,500);
   setInterval(fadeOut,250);
   setInterval(createParticle,1000 + Math.random()*1000);
 
@@ -48,6 +48,7 @@ function prepareCanvas(canvasElem) {
   return context;
 }
 
+//# needs context, particles this.context, this.particleGenerator.activeParticles
 function drawParticles() {
   ParticleTracks.activeParticles.forEach(particle => {
     draw(particle);
@@ -55,6 +56,7 @@ function drawParticles() {
   });
 };
 
+//# needs context, particles
 // Set up and draw a particle for one frame of movement.
 function draw(particle) {
   // Don't draw massless particles, stopped particles
@@ -109,18 +111,9 @@ function fadeOut() {
   ParticleTracks.ctx.fillRect(0, 0, ParticleTracks.canvas.width, ParticleTracks.canvas.height);
 };
 
-// Make the Perlin noise background dynamic
-function getPerlinSeed(){
-  ParticleTracks.perlinSeed = (ParticleTracks.perlinSeed + 1) % 100;
-  return ParticleTracks.perlinSeed;
-};
-
-function updateNoise() {
-  filterTurbulence.setAttribute('seed',getPerlinSeed());
-};
-
 // Particles
 class Particle {
+  //# abstract out position3D, velocity3D from Vectors
   constructor(x_0, y_0, z_0, vel_x, vel_y, vel_z, charge, mass) {
     // Physical properties
     this.mass = mass;
@@ -143,7 +136,7 @@ class Particle {
   };
 
   absVelocity(){
-    return(Math.sqrt(Math.pow(this.v_x, 2) + Math.pow(this.v_y, 2)));
+    r\eturn(Math.sqrt(Math.pow(this.v_x, 2) + Math.pow(this.v_y, 2)));
   };
 
   stopped() {
@@ -267,7 +260,7 @@ class Neutron extends Particle {
 
 ParticleTracks.particleTypes = [Muon, Photon, Proton, Neutron];
 
-function createParticle() {
+function createParticle() { // -> createRandomParticle
   let particleClass = selectFromArray(ParticleTracks.particleTypes);
 
   // TODO: choose random energies, use momentum to decide velocity
