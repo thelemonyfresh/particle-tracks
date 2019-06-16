@@ -1,7 +1,8 @@
 import PerlinNoiseLayer from './perlin_noise_layer';
+import ParticleCanvas from './particle_canvas';
+import ParticleGenerator from './particle_generator';
 
 (function(window){
-  console.log('asdf');
   window.ParticleTracks = {};
 
   ParticleTracks.init = ({container = ''})=>{
@@ -11,14 +12,19 @@ import PerlinNoiseLayer from './perlin_noise_layer';
     ParticleTracks.noiseLayer = new PerlinNoiseLayer(ParticleTracks.container);
     ParticleTracks.noiseLayer.init();
 
-    // keep list of particles
+    // Iniialize Particle Canvas
+    ParticleTracks.particleCanvas = new ParticleCanvas(ParticleTracks.container);
+    ParticleTracks.particleCanvas.init();
 
-    // drawParticles
+    // Initialize active particles list
+    ParticleTracks.activeParticles = [];
+
+    // Initialize particle generator
+    ParticleTracks.generator = new ParticleGenerator();
+    ParticleTracks.generator.init();
+
 
     // MODULES:
-
-    // Perlin Noise -- getPerlinSeed
-    // new PerlinNoiseLayer.init(container);
 
     // Particle generator -- createParticle(), selectFromArray(), activeParticles
     // // imports Particle, subparticles -- Particle, Electron, etc., isStopped?

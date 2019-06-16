@@ -1,4 +1,4 @@
-import svgNoise from 'svg-inline-loader?classPrefix!./perlin_noise.svg';
+import noiseSVG from 'svg-inline-loader?classPrefix!./perlin_noise.svg';
 
 class PerlinNoiseLayer {
   constructor(container){
@@ -8,10 +8,24 @@ class PerlinNoiseLayer {
   };
 
   init() {
-    this.targetContainer.innerHTML += svgNoise;
+    this.targetContainer.innerHTML += noiseSVG;
+    let svgElem = document.getElementById('particle-tracks-perlin-noise-svg');
+
+    this.setupSVG(svgElem);
+
     this.filterTurbulence = document.getElementById('particle-tracks-perlin-turbulence');
     setInterval(() => this.updateNoise(),500);
   };
+
+  setupSVG(svg) {
+    let rect = this.targetContainer.getBoundingClientRect();
+
+    svg.style.position = 'absolute';
+    svg.style.top = rect.top;
+    svg.style.left = rect.left;
+    svg.style.width = rect.width;
+    svg.style.height = rect.height;
+  }
 
   // Make the Perlin noise background dynamic
   getPerlinSeed(){
