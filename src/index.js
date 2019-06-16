@@ -23,7 +23,7 @@ import ParticleGenerator from './particle_generator';
     ParticleTracks.generator = new ParticleGenerator();
     ParticleTracks.generator.init();
 
-    console.log('Particle tracks simulation initiated.');
+    console.log('Particle tracks visualization initiated.');
   };
 
 })(window);

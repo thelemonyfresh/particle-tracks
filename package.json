@@ -1,7 +1,7 @@
 {
   "name": "particle-tracks",
   "version": "1.0.0",
-  "description": "",
+  "description": "Particle tracks visualization inspired by bubble chamber photography.",
   "main": "dist/main.js",
   "dependencies": {},
   "devDependencies": {
@@ -26,7 +26,7 @@
     "url": "git+https://github.com/thelemonyfresh/particle-tracks.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "thelemonyfresh (Daniel Porter -- dp@danielporter.ca)",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/thelemonyfresh/particle-tracks/issues"
