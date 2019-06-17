@@ -7,7 +7,13 @@ import ParticleGenerator from './particle_generator';
     window.ParticleTracks = {};
 
     ParticleTracks.init = ({container = ''})=>{
-      ParticleTracks.container = document.getElementById(container);
+      if (ParticleTracks.initiated) return;
+
+      ParticleTracks.container = document.getElementsByClassName(container)[0];
+      if (!ParticleTracks.container) {
+        console.log('Please provide ParticleTracks with a valid container.');
+        return;
+      }
 
       // Initialize Perlin Noise Layer
       ParticleTracks.noiseLayer = new PerlinNoiseLayer(ParticleTracks.container);
@@ -29,6 +35,7 @@ import ParticleGenerator from './particle_generator';
         ParticleTracks.particleCanvas.setupDrawArea();
       };
 
+      ParticleTracks.initiated = true;
       console.log('Particle tracks visualization initiated.');
     };
   };
