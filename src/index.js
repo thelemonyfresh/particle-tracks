@@ -9,7 +9,11 @@ import ParticleGenerator from './particle_generator';
     ParticleTracks.init = ({container = ''})=>{
       if (ParticleTracks.initiated) return;
 
-      ParticleTracks.container = document.getElementById(container);
+      ParticleTracks.container = document.getElementsByClassName(container)[0];
+      if (!ParticleTracks.container) {
+        console.log('Please provide ParticleTracks with a valid container.');
+        return;
+      }
 
       // Initialize Perlin Noise Layer
       ParticleTracks.noiseLayer = new PerlinNoiseLayer(ParticleTracks.container);
