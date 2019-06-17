@@ -7,7 +7,7 @@ class ParticleGenerator {
 
   init(){
     this.createParticle();
-    setInterval(() => this.createParticle(),1000 + Math.random()*1000);
+    setInterval(() => this.createParticle(),250 + Math.random()*1000);
   }
 
   createParticle() {

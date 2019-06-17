@@ -7,6 +7,8 @@ import ParticleGenerator from './particle_generator';
     window.ParticleTracks = {};
 
     ParticleTracks.init = ({container = ''})=>{
+      if (ParticleTracks.initiated) return;
+
       ParticleTracks.container = document.getElementById(container);
 
       // Initialize Perlin Noise Layer
@@ -29,6 +31,7 @@ import ParticleGenerator from './particle_generator';
         ParticleTracks.particleCanvas.setupDrawArea();
       };
 
+      ParticleTracks.initiated = true;
       console.log('Particle tracks visualization initiated.');
     };
   };
