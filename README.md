@@ -1,13 +1,13 @@
 A basic 'particle tracks' visualization styled after iconic images from the [Big European Bubble Chamber (BEBC)](https://home.cern/news/news/experiments/seeing-invisible-event-displays-particle-physics).
 
-See [my personal site](www.danielporter.ca) for a demo.
+See [my personal site](https://www.danielporter.ca) for a demo.
 
 ## Install
 #### NPM
 ``` shell
 npm install thelemonyfresh/particle-tracks
 ```
-Then require the library in your page's js (`import 'particle-tracks'`).
+Then require the library in your js (`import 'particle-tracks'`).
 
 #### Plain ol' HTML
 Download the `/dist/main.js` library to a known location, then simply import via a script tag:
