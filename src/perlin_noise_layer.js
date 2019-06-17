@@ -27,11 +27,11 @@ class PerlinNoiseLayer {
     let rect = this.targetContainer.getBoundingClientRect();
 
     svg.style.position = 'absolute';
-    svg.style.top = rect.top;
-    svg.style.left = rect.left;
+    svg.style.top = 0;
+    svg.style.left = 0;
     svg.style.width = rect.width;
     svg.style.height = rect.height;
-    svg.style.zIndex = 1;
+    svg.style.zIndex = 0;
     svg.style.opacity = 0.75;
   }
 

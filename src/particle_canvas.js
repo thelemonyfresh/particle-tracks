@@ -4,47 +4,47 @@ class ParticleCanvas {
   };
 
   init() {
-    this.prepareContext(this.container);
-
+    this.setupDrawArea();
     setInterval(() => this.drawParticles(),25);
     setInterval(() => this.fadeOut(),250);
   };
 
-  prepareContext(container) {
+  setupDrawArea() {
+    this.canvas = this.prepareCanvas(this.container);
+    this.context = this.prepareContext(this.canvas);
+  };
+
+  prepareCanvas(container) {
     // Initialize canvas to the correct dpr-scaled size
-    const dpr = window.devicePixelRatio || 1;
 
     let canvas = document.createElement('canvas');
     canvas.id = 'particle-tracks-particle-canvas';
     container.appendChild(canvas);
     canvas = document.getElementById('particle-tracks-particle-canvas');
 
+    let rect = container.getBoundingClientRect();
+
     canvas.style.position = 'absolute';
     canvas.style.top = 0;
     canvas.style.left = 0;
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-
-    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    canvas.style.zIndex = -1;
 
     // Have to store the global width and height before scaling with dpr
     ParticleTracks.width = rect.width;
     ParticleTracks.height = rect.width;
 
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+    return canvas;
+  }
 
-    // Set canvas
-    this.canvas = canvas;
-
+  prepareContext(canvas) {
     let context = canvas.getContext("2d");
-    context.scale(dpr, dpr);
 
     context.fillStyle = "yellow";
-    context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Set context
-    this.context = context;
+    return context;
   };
 
   drawParticles() {
