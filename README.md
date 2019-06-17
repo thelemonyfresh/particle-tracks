@@ -2,6 +2,8 @@ A basic 'particle tracks' visualization styled after iconic images from the [Big
 
 See [my personal site](https://www.danielporter.ca) for a demo.
 
+![screenshot](https://raw.githubusercontent.com/thelemonyfresh/particle-tracks/master/dist/particle-tracks-screenshot.png)
+
 ## Install
 #### NPM
 ``` shell
