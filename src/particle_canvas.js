@@ -6,7 +6,7 @@ class ParticleCanvas {
   init() {
     this.setupDrawArea();
     setInterval(() => this.drawParticles(),25);
-    setInterval(() => this.fadeOut(),250);
+    setInterval(() => this.fadeOut(),400);
   };
 
   setupDrawArea() {
@@ -103,7 +103,7 @@ class ParticleCanvas {
 
   // Fade particle tracks.
   fadeOut() {
-    this.context.fillStyle =  "rgba(255,255,0,0.2)";
+    this.context.fillStyle =  "rgba(255,255,0,0.15)";
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
   };
 
